@@ -1,0 +1,2 @@
+# BlogBuddy
+Blog post generator
