@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BlogBuddy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@2.8.2/dist/alpine.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@1.5.4/dist/htmx.min.js" defer></script>
+</head>
+
+<body class="bg-gray-100">
+    <div x-data="{ resultVisible: false }" class="flex items-center justify-center">
+        <div class="w-full max-w-xl p-8 bg-white rounded-lg shadow-md mt-8">
+            <h1 class="text-4xl font-bold text-center mb-8">BlogBuddy</h1>
+
+            <form action="/" method="POST" x-data="{ isLoading: false }"
+                x-on:submit="isLoading = true; setTimeout(() => isLoading = false, 60000)">
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2" for="prompt">
+                        Enter post title
+                    </label>
+                    <textarea
+                        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        id="prompt" type="text" placeholder="Type your post title here" name="prompt"
+                        required></textarea>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">
+                        Select Snippet Type
+                    </label>
+                    <div class="space-y-2">
+                        <div class="flex items-center">
+                            <input type="radio" id="definition-box" name="snippet-type" value="definition">
+                            <label for="definition-box" class="ml-2">Definition Box</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="table" name="snippet-type" value="table">
+                            <label for="table" class="ml-2">Table</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="ordered-list" name="snippet-type" value="ordered-list">
+                            <label for="ordered-list" class="ml-2">Ordered List</label>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="radio" id="unordered-list" name="snippet-type" value="unordered-list">
+                            <label for="unordered-list" class="ml-2">Unordered List</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        type="submit" x-bind:disabled="isLoading">
+                        <span x-show="!isLoading">Generate</span>
+                        <span x-show="isLoading" class="animate-spin">Generating...</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Result Section -->
+    <% if (result) { %>
+
+        <div class="mt-6 max-w-xl mx-auto p-4">
+            <div class="bg-gray-200 p-4 rounded-md">
+                <p><%- result %></p>
+            </div>
+        </div>
+
+        <% } %>
+
+</body>
+
+</html>
