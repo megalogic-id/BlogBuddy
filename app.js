@@ -41,7 +41,7 @@ const generateBlogPost = async (prompt, snippetType) => {
         Isinya harus SEO-friendly agar mendapatkan featured snippet ${snippetType}.
         Buatkan dalam format HTML, setiap point penting ditebalkan dan diberi baris baru
       `,
-      max_tokens: 1000,
+      max_tokens: 4000,
     });
 
     console.log(response.choices);
