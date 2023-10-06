@@ -17,14 +17,14 @@ app.get("/", (req, res) => {
   res.render("index.ejs", { result: "" });
 });
 
-app.post("/", async (req, res) => {
+app.post("/generate-content", async (req, res) => {
   const prompt = req.body.prompt;
   const snippetType = req.body["snippet-type"];
   console.log(prompt);
 
   try {
     const result = await generateBlogPost(prompt, snippetType);
-    res.render("index.ejs", { result: result });
+    res.send(result);
   } catch (error) {
     console.error("Error generating blog post:", error);
     res.status(500).send("An error occurred while generating the blog post.");
