@@ -10,7 +10,7 @@
                 <h1 class="text-4xl font-bold text-center mt-8"><a href="/">BlogBuddy</a></h1>
                 <div class="w-full max-w-xl p-8 bg-white rounded-lg shadow-md mt-8">
                     <form>
-                        <div class="mb-6">
+                        <div class="mb-3">
                             <label class="block text-gray-700 text-sm font-bold mb-2" for="prompt">
                                 Masukkan judul artikel
                             </label>
@@ -18,9 +18,10 @@
                                 class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="prompt" type="text" placeholder="Masukkan judul artikel disini" name="prompt"
                                 required>
+                            <p id="alertInput" class="text-xs text-red-600 italic opacity-0 transition-opacity duration-500 ease-in-out">*Maaf guys, tolong masukkan judul artikel terlebih dahulu.</p>
                         </div>
 
-                        <div class="mb-6">
+                        <div class="mb-3">
                             <label class="block text-gray-700 text-sm font-bold mb-2">
                                 Pilih Tipe <i>Featured Snippet</i>
                             </label>
@@ -41,13 +42,14 @@
                                     <input type="radio" id="unordered-list" name="snippet-type" value="unordered-list">
                                     <label for="unordered-list" class="ml-2">Unordered List</label>
                                 </div>
+                                <p id="alertSnippet" class="mt-2 text-xs text-red-600 italic opacity-0 transition-opacity duration-500 ease-in-out">*Maaf guys, tolong pilih tipe Featured Snippet terlebih dahulu.</p>
                             </div>
                         </div>
 
                         <div class="text-center">
                             <button 
                                 x-data="{ generating: false }"
-                                @click="generating = handleClick($event, generating); setTimeout(() => { generating = false}, 30000)"
+                                @click="generating = await handleClick($event); setTimeout(() => { generating = false}, 45000)"
                                 type="button"
                                 class="mt-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 w-full md:w-auto"
                                 x-bind:disabled="generating"
@@ -55,11 +57,11 @@
                                 >
                                 <span x-show="!generating">Buat Artikel</span>
                                 <span x-show="generating" class="flex"><img class="mr-1" src="/img/loading.gif" width="17px" height="10px"> Sedang membuat artikel...</span>
-                            </button>
+                            </button>                            
                         </div>
                     </form>
                 </div>
-                <div class="w-full max-w-xl p-8 bg-white rounded-lg shadow-md mt-8" style="display: none;" id="boxResult">
+                <div class="hidden w-full max-w-xl p-8 bg-white rounded-lg shadow-md mt-8" id="boxResult">
                     <div class="mb-2 text-xs text-right">
                         <button id="btn-copy" class="p-1 bg-gray-300 text-gray-700 rounded" onclick="copyToClipboard()">Copy Text</button>
                     </div>
@@ -110,16 +112,21 @@
                 
                 }
 
-                async function handleClick(event, generating){
+                async function handleClick(event){
                     const promptInput = document.getElementById('prompt');
                     const snippetTypeInputs = document.querySelectorAll('input[name="snippet-type"]');
                     const boxResult = document.getElementById("boxResult")
-                    
+                    const alertInput = document.getElementById("alertInput")
+                    const alertSnippet = document.getElementById("alertSnippet")
+
                     // Pemeriksaan jika input prompt kosong
                     if (promptInput.value.trim() === '') {
-                        alert('Mohon masukkan judul artikel.');
                         event.preventDefault(); // Mencegah pengiriman formulir jika input kosong
-                        return;
+                        alertInput.classList.add("opacity-100")
+                        setTimeout(()=>{
+                            alertInput.classList.remove("opacity-100")
+                        }, 3000)
+                        return false;
                     }
                     // Pemeriksaan jika tidak ada tipe snippet yang dipilih
                     let snippetTypeChecked = false;
@@ -129,19 +136,25 @@
                         }
                     });
                     if (!snippetTypeChecked) {
-                        alert('Mohon pilih tipe Featured Snippet.');
                         event.preventDefault(); // Mencegah pengiriman formulir jika tidak ada tipe snippet yang dipilih
-                        return;
+                        alertSnippet.classList.add("opacity-100") 
+                        setTimeout(() => {
+                            alertSnippet.classList.remove("opacity-100") 
+                        }, 3000);
+                        return false;
                     }
 
                     // Jika semua pemeriksaan berhasil, lanjutkan dengan tindakan yang diinginkan
-                    setTimeout(function() {
-                        boxResult.style.display = "block";
-                    }, 10000);
-
-                    await generate();
+                    setTimeout(async function() {
+                        await generate();
+                    });
                     
-                    return !generating
+                    setTimeout(function() {
+                        boxResult.classList.remove("hidden");
+                    }, 9000);
+                    
+                    return true
+                     
                 }
 
                 function copyToClipboard() {
